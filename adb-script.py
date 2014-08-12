@@ -77,7 +77,8 @@ def nfc_logs(output):
 			print(line)
 			found = True
 	return found
-	
+
+print("")
 detect_device()
 print(device_name())
 
@@ -134,5 +135,5 @@ else:
 
 input("\nPress Enter to exit.")
 
-path = os.getcwd()+"\logs"
+path = os.path.dirname(os.getcwd())+"\logs"
 subprocess.Popen('explorer "{0}"'.format(path))
