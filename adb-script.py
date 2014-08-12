@@ -13,7 +13,8 @@ from email import encoders
 def device_name():
 	proc = subprocess.Popen(["adb", "shell", "cat" ,"/system/build.prop"], stdout=subprocess.PIPE)
 	(out, err) = proc.communicate()
-	out = out.decode("utf-8").split("\r\r\n")
+	out = out.decode("utf-8").split("\r\n")
+	manufacturer, model, id = "-", "-", "-"
 	for line in out:
 		if "ro.product.manufacturer" in line:
 			manufacturer = line.split("=")[1]
