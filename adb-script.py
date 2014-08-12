@@ -81,11 +81,13 @@ def nfc_logs(output):
 detect_device()
 print(device_name())
 
-print("Available options:")
+print("Available options:\n")
 print("[1] build.prop: ro.product vars")
 print("[2] main + radio logs [buffer] (with NFC API check)")
 print("[3] main logs [live]")
+print("")
 nb = input('Choose option: ')
+print("")
 
 if nb=="1":
 	proc = subprocess.Popen(["adb", "shell", "cat" ,"/system/build.prop"], stdout=subprocess.PIPE, shell=True)
@@ -130,5 +132,7 @@ elif nb=="3":
 else:
 	print("Invalid choice.")
 
-subprocess.Popen(r'explorer "C:\Users\PESM Test\Desktop\ADB-script\logs"')
-input("Press Enter to exit.")
+input("\nPress Enter to exit.")
+
+path = os.getcwd()+"\logs"
+subprocess.Popen('explorer "{0}"'.format(path))
