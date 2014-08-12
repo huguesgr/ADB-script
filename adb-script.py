@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import subprocess, time, re, smtplib, os
+import subprocess, time, re, smtplib, os, platform
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
@@ -10,10 +10,17 @@ from email import encoders
 # TO DO
 ###########################
 
+if(platform.system()=="Windows"):
+	split_string = "\r\r\n"
+	logs_folder_name='\\logs\\'
+else:
+	split_string = "\r\n"
+	logs_folder_name='/logs/'
+
 def device_name():
 	proc = subprocess.Popen(["adb", "shell", "cat" ,"/system/build.prop"], stdout=subprocess.PIPE)
 	(out, err) = proc.communicate()
-	out = out.decode("utf-8").split("\r\n")
+	out = out.decode("utf-8").split(split_string)
 	manufacturer, model, id = "-", "-", "-"
 	for line in out:
 		if "ro.product.manufacturer" in line:
@@ -93,20 +100,20 @@ print("")
 
 # Difference if script is launch from Python script or .exe
 if os.getcwd()[-10:]=="ADB-script":
-	file_path = os.getcwd()+'/logs/'
+	logs_path = os.getcwd()+logs_folder_name
 else:
-	file_path = os.path.dirname(os.getcwd())+'/logs/'
+	logs_path = os.path.dirname(os.getcwd())+logs_folder_name
 
 # Creating logs folder
-if not os.path.exists(file_path): os.makedirs(file_path)
+if not os.path.exists(logs_path): os.makedirs(logs_path)
 
 # Adding device name for log files
-file_path += device_name()
+file_path = logs_path+device_name()
 
 if nb=="1":
 	proc = subprocess.Popen(["adb", "shell", "cat" ,"/system/build.prop"], stdout=subprocess.PIPE)
 	(out, err) = proc.communicate()
-	out = out.decode("utf-8").split("\r\n")
+	out = out.decode("utf-8").split(split_string)
 	for line in out:
 		if "ro.product.model" in line or "ro.product.manufacturer" in line:
 			print(line)
@@ -146,5 +153,4 @@ else:
 input("\nPress Enter to exit.")
 
 # WINDOWS only
-path = os.path.dirname(os.getcwd())+"\logs"
-subprocess.Popen('explorer "{0}"'.format(path))
+subprocess.Popen('explorer "{0}"'.format(logs_path))
