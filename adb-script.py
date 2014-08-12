@@ -55,7 +55,7 @@ def prompt_email_and_send(attach, type):
 		server.quit()
 		print("Successfully sent email.")
 	except SMTPException:
-	   print("Error: unable to send email.")
+		print("Error: unable to send email.")
 
 def device_status():
 	proc = subprocess.Popen(["adb", "devices", "-l"], stdout=subprocess.PIPE)
@@ -86,7 +86,6 @@ def nfc_logs(output):
 			found = True
 	return found
 
-print("")
 detect_device()
 print(device_name())
 
