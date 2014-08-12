@@ -21,7 +21,7 @@ def device_name():
 			model = line.split("=")[1]
 		elif "ro.build.id" in line:
 			id = line.split("=")[1]
-	return manufacturer+"_"+model+"_"+id+"_"+time.strftime("%d-%m-%Y_%H:%M:%S")
+	return manufacturer+"_"+model+"_"+id+"_"+time.strftime("%d-%m-%Y_%H-%M-%S")
 	
 def prompt_email_and_send(attach, type):
 	msg = MIMEMultipart()
@@ -90,6 +90,8 @@ print("")
 nb = input('Choose option: ')
 print("")
 
+file_path = os.path.dirname(os.getcwd())+"/logs/"+device_name()
+
 if nb=="1":
 	proc = subprocess.Popen(["adb", "shell", "cat" ,"/system/build.prop"], stdout=subprocess.PIPE, shell=True)
 	(out, err) = proc.communicate()
@@ -98,9 +100,7 @@ if nb=="1":
 		if "ro.product.model" in line or "ro.product.manufacturer" in line:
 			print(line)
 			
-elif nb=="2":
-	file_path = "logs/"+device_name()
-	
+elif nb=="2":	
 	proc = subprocess.Popen(["adb", "logcat", "-v" ,"time", "-d"], stdout=open(file_path+"_main.txt",'w'), shell=True)
 	(out, err) = proc.communicate()
 	out_main = open(file_path+"_main.txt",'r')
@@ -119,7 +119,6 @@ elif nb=="2":
 		prompt_email_and_send(file_path+"_radio.txt", 'radio')
 	
 elif nb=="3":
-	filename = "logs/"+device_name()
 	try:
 		proc = subprocess.Popen(["adb", "logcat", "-v" ,"time"], stdout=open(file_path+"_main.txt",'w'))
 		print("Press CTRL+C to stop log capture.")
@@ -135,5 +134,6 @@ else:
 
 input("\nPress Enter to exit.")
 
+# WINDOWS only
 path = os.path.dirname(os.getcwd())+"\logs"
 subprocess.Popen('explorer "{0}"'.format(path))
