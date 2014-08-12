@@ -88,26 +88,36 @@ print("[1] build.prop: ro.product vars")
 print("[2] main + radio logs [buffer] (with NFC API check)")
 print("[3] main logs [live]")
 print("")
-nb = input('Choose option: ')
+nb = str(input('Choose option: '))
 print("")
 
-file_path = os.path.dirname(os.getcwd())+'\\logs\\'+device_name()
+# Difference if script is launch from Python script or .exe
+if os.getcwd()[-10:]=="ADB-script":
+	file_path = os.getcwd()+'/logs/'
+else:
+	file_path = os.path.dirname(os.getcwd())+'/logs/'
+
+# Creating logs folder
+if not os.path.exists(file_path): os.makedirs(file_path)
+
+# Adding device name for log files
+file_path += device_name()
 
 if nb=="1":
 	proc = subprocess.Popen(["adb", "shell", "cat" ,"/system/build.prop"], stdout=subprocess.PIPE)
 	(out, err) = proc.communicate()
-	out = out.decode("utf-8").split("\r\r\n")
+	out = out.decode("utf-8").split("\r\n")
 	for line in out:
 		if "ro.product.model" in line or "ro.product.manufacturer" in line:
 			print(line)
 			
 elif nb=="2":
-	proc = subprocess.Popen(["adb", "logcat", "-v" ,"time", "-d"], stdout=open(file_path+"_main.txt", 'w', encoding='utf-8'))
+	proc = subprocess.Popen(["adb", "logcat", "-v" ,"time", "-d"], stdout=open(file_path+"_main.txt", 'w'))
 	(out, err) = proc.communicate()
-	out_main = open(file_path+"_main.txt", 'r', encoding='utf-8')
-	proc = subprocess.Popen(["adb", "logcat", "-b", "radio", "-v" ,"time", "-d"], stdout=open(file_path+"_radio.txt", 'w', encoding='utf-8'))
+	out_main = open(file_path+"_main.txt", 'r')
+	proc = subprocess.Popen(["adb", "logcat", "-b", "radio", "-v" ,"time", "-d"], stdout=open(file_path+"_radio.txt", 'w'))
 	(out, err) = proc.communicate()
-	out_radio = open(file_path+"_radio.txt", 'r', encoding='utf-8')
+	out_radio = open(file_path+"_radio.txt", 'r')
 	
 	found = nfc_logs(out_main) or nfc_logs(out_radio)
 	
@@ -121,7 +131,7 @@ elif nb=="2":
 	
 elif nb=="3":
 	try:
-		proc = subprocess.Popen(["adb", "logcat", "-v" ,"time"], stdout=open(file_path+"_main.txt", 'w', encoding='utf-8'))
+		proc = subprocess.Popen(["adb", "logcat", "-v" ,"time"], stdout=open(file_path+"_main.txt", 'w'))
 		print("Press CTRL+C to stop log capture.")
 		proc.wait()
 	except KeyboardInterrupt:
