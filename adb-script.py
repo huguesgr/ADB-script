@@ -21,7 +21,7 @@ def device_name():
 			model = line.split("=")[1]
 		elif "ro.build.id" in line:
 			id = line.split("=")[1]
-	return manufacturer+"_"+model+"_"+id+"_"+time.strftime("%d-%m-%Y")
+	return manufacturer+"_"+model+"_"+id+"_"+time.strftime("%d-%m-%Y_%H:%M:%S")
 	
 def prompt_email_and_send(attach, type):
 	msg = MIMEMultipart()
