@@ -1,4 +1,7 @@
 logs/
+__pycache__/
+dist/*
+!dist/adb-script.exe
 
 # Windows image file caches
 Thumbs.db

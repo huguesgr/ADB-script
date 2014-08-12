@@ -1,0 +1,1 @@
+To generate .exe: python setup.py py2exe
