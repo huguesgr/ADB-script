@@ -90,7 +90,7 @@ print("")
 nb = input('Choose option: ')
 print("")
 
-file_path = os.path.dirname(os.getcwd())+"/logs/"+device_name()
+file_path = os.path.dirname(os.getcwd())+'\\logs\\'+device_name()
 
 if nb=="1":
 	proc = subprocess.Popen(["adb", "shell", "cat" ,"/system/build.prop"], stdout=subprocess.PIPE)
@@ -100,13 +100,13 @@ if nb=="1":
 		if "ro.product.model" in line or "ro.product.manufacturer" in line:
 			print(line)
 			
-elif nb=="2":	
-	proc = subprocess.Popen(["adb", "logcat", "-v" ,"time", "-d"], stdout=open(file_path+"_main.txt",'w'))
+elif nb=="2":
+	proc = subprocess.Popen(["adb", "logcat", "-v" ,"time", "-d"], stdout=open(file_path+"_main.txt", 'w', encoding='utf-8'))
 	(out, err) = proc.communicate()
-	out_main = open(file_path+"_main.txt",'r')
-	proc = subprocess.Popen(["adb", "logcat", "-b", "radio", "-v" ,"time", "-d"], stdout=open(file_path+"_radio.txt",'w'))
+	out_main = open(file_path+"_main.txt", 'r', encoding='utf-8')
+	proc = subprocess.Popen(["adb", "logcat", "-b", "radio", "-v" ,"time", "-d"], stdout=open(file_path+"_radio.txt", 'w', encoding='utf-8'))
 	(out, err) = proc.communicate()
-	out_radio = open(file_path+"_radio.txt",'r')
+	out_radio = open(file_path+"_radio.txt", 'r', encoding='utf-8')
 	
 	found = nfc_logs(out_main) or nfc_logs(out_radio)
 	
@@ -120,7 +120,7 @@ elif nb=="2":
 	
 elif nb=="3":
 	try:
-		proc = subprocess.Popen(["adb", "logcat", "-v" ,"time"], stdout=open(file_path+"_main.txt",'w'))
+		proc = subprocess.Popen(["adb", "logcat", "-v" ,"time"], stdout=open(file_path+"_main.txt", 'w', encoding='utf-8'))
 		print("Press CTRL+C to stop log capture.")
 		proc.wait()
 	except KeyboardInterrupt:
