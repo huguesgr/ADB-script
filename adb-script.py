@@ -11,7 +11,7 @@ from email import encoders
 ###########################
 
 def device_name():
-	proc = subprocess.Popen(["adb", "shell", "cat" ,"/system/build.prop"], stdout=subprocess.PIPE, shell=True)
+	proc = subprocess.Popen(["adb", "shell", "cat" ,"/system/build.prop"], stdout=subprocess.PIPE)
 	(out, err) = proc.communicate()
 	out = out.decode("utf-8").split("\r\r\n")
 	for line in out:
@@ -50,7 +50,7 @@ def prompt_email_and_send(attach, type):
 	   print("Error: unable to send email.")
 
 def device_status():
-	proc = subprocess.Popen(["adb", "devices", "-l"], stdout=subprocess.PIPE, shell=True)
+	proc = subprocess.Popen(["adb", "devices", "-l"], stdout=subprocess.PIPE)
 	(out, err) = proc.communicate()
 	out=out.decode("utf-8")
 	if out.find("device:")!=-1:
@@ -93,7 +93,7 @@ print("")
 file_path = os.path.dirname(os.getcwd())+"/logs/"+device_name()
 
 if nb=="1":
-	proc = subprocess.Popen(["adb", "shell", "cat" ,"/system/build.prop"], stdout=subprocess.PIPE, shell=True)
+	proc = subprocess.Popen(["adb", "shell", "cat" ,"/system/build.prop"], stdout=subprocess.PIPE)
 	(out, err) = proc.communicate()
 	out = out.decode("utf-8").split("\r\r\n")
 	for line in out:
@@ -101,10 +101,10 @@ if nb=="1":
 			print(line)
 			
 elif nb=="2":	
-	proc = subprocess.Popen(["adb", "logcat", "-v" ,"time", "-d"], stdout=open(file_path+"_main.txt",'w'), shell=True)
+	proc = subprocess.Popen(["adb", "logcat", "-v" ,"time", "-d"], stdout=open(file_path+"_main.txt",'w'))
 	(out, err) = proc.communicate()
 	out_main = open(file_path+"_main.txt",'r')
-	proc = subprocess.Popen(["adb", "logcat", "-b", "radio", "-v" ,"time", "-d"], stdout=open(file_path+"_radio.txt",'w'), shell=True)
+	proc = subprocess.Popen(["adb", "logcat", "-b", "radio", "-v" ,"time", "-d"], stdout=open(file_path+"_radio.txt",'w'))
 	(out, err) = proc.communicate()
 	out_radio = open(file_path+"_radio.txt",'r')
 	
