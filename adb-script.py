@@ -136,6 +136,9 @@ elif nb=="2":
 		prompt_email_and_send(file_path+"_main.txt", 'main')
 		prompt_email_and_send(file_path+"_radio.txt", 'radio')
 	
+	# WINDOWS only
+	subprocess.Popen('explorer "{0}"'.format(logs_path))
+	
 elif nb=="3":
 	try:
 		proc = subprocess.Popen(["adb", "logcat", "-v" ,"time"], stdout=open(file_path+"_main.txt", 'w'))
@@ -147,10 +150,10 @@ elif nb=="3":
 	if email=="y":
 		prompt_email_and_send(file_path+"_main.txt", 'main')
 		
+	# WINDOWS only
+	subprocess.Popen('explorer "{0}"'.format(logs_path))
+		
 else:
 	print("Invalid choice.")
 
 input("\nPress Enter to exit.")
-
-# WINDOWS only
-subprocess.Popen('explorer "{0}"'.format(logs_path))
