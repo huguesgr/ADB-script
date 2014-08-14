@@ -158,21 +158,21 @@ elif nb=="2":
 	
 	email = input("Send logs by email? (y/n)")
 	if email=="y":
-		prompt_email_and_send([file_path+"_main.txt", file_path+"_radio.txt"], 'main + radio')
+		prompt_email_and_send([logs_path+device_name+"_main.txt", logs_path+device_name+"_radio.txt"], 'main + radio')
 	
 	# WINDOWS only
 	subprocess.Popen('explorer "{0}"'.format(logs_path))
 	
 elif nb=="3":
 	try:
-		proc = subprocess.Popen(["adb", "logcat", "-v" ,"time"], stdout=open(file_path+"_main.txt", 'w'))
+		proc = subprocess.Popen(["adb", "logcat", "-v" ,"time"], stdout=open(logs_path+device_name+"_main.txt", 'w'))
 		print("Press CTRL+C to stop log capture.")
 		proc.wait()
 	except KeyboardInterrupt:
 		proc.terminate()	
 	email = input("Send logs by email? (y/n)")
 	if email=="y":
-		prompt_email_and_send(file_path+"_main.txt", 'main')
+		prompt_email_and_send([logs_path+device_name+"_main.txt"], 'main')
 		
 	# WINDOWS only
 	subprocess.Popen('explorer "{0}"'.format(logs_path))
