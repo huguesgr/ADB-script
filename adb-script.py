@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-import subprocess, time, re, smtplib, os, platform
+import subprocess, time, re, smtplib, os, platform, zipfile
 from email.mime.multipart import MIMEMultipart
 from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
@@ -17,6 +17,23 @@ else:
 	split_string = "\r\n"
 	logs_folder_name='/logs/'
 
+def zip_attach(files):
+	zip_name=logs_path+device_name+'.zip'
+	try:
+		import zlib
+		compression = zipfile.ZIP_DEFLATED
+	except:
+		compression = zipfile.ZIP_STORED
+		
+	print("Zipping logs...")
+	zf = zipfile.ZipFile(zip_name, mode='w')
+	try:
+		for f in files:
+			zf.write(f, compress_type=compression)
+	finally:
+		zf.close()
+		return zip_name	
+
 def device_name():
 	proc = subprocess.Popen(["adb", "shell", "cat" ,"/system/build.prop"], stdout=subprocess.PIPE)
 	(out, err) = proc.communicate()
@@ -31,18 +48,20 @@ def device_name():
 			id = line.split("=")[1]
 	return manufacturer+"_"+model+"_"+id+"_"+time.strftime("%d-%m-%Y_%H-%M-%S")
 	
-def prompt_email_and_send(attach, type):
+def prompt_email_and_send(files, type):
 	msg = MIMEMultipart()
 	
 	msg['From'] = "testunps@gmail.com"
 	msg['To'] = input("Your email address?")
-	msg['Subject'] = "ADB-script Logs - "+device_name()+" - "+type
+	msg['Subject'] = "ADB-script Logs - "+device_name+" - "+type
+	
+	attachment=zip_attach(files)
 
 	msg.attach(MIMEText("Here are your logs."))
 	part = MIMEBase('application', 'octet-stream')
-	part.set_payload(open(attach, 'rb').read())
+	part.set_payload(open(attachment, 'rb').read())
 	encoders.encode_base64(part)
-	part.add_header('Content-Disposition', 'attachment; filename="%s"' % os.path.basename(attach))
+	part.add_header('Content-Disposition', 'attachment; filename="%s"' % os.path.basename(attachment))
 	msg.attach(part)
 
 	try:
@@ -63,6 +82,8 @@ def device_status():
 	out=out.decode("utf-8")
 	if out.find("device:")!=-1:
 		return "detected"
+	elif out.find("offline")!=-1:
+		return "offline"
 	elif out.find("unauthorized")!=-1:
 		return "unauthorized"
 	else:
@@ -77,6 +98,10 @@ def detect_device():
 		print("You need to authorize access on the device.")
 		while(device_status()=="unauthorized"):
 			time.sleep(1)
+	if(device_status()=="offline"):
+		print("There is an issue detecting your device.")
+		while(device_status()=="offline"):
+			time.sleep(1)
 
 def nfc_logs(output):
 	found = False
@@ -85,17 +110,6 @@ def nfc_logs(output):
 			print(line)
 			found = True
 	return found
-
-detect_device()
-print(device_name())
-
-print("Available options:\n")
-print("[1] build.prop: ro.product vars")
-print("[2] main + radio logs [buffer] (with NFC API check)")
-print("[3] main logs [live]")
-print("")
-nb = str(input('Choose option: '))
-print("")
 
 # Difference if script is launch from Python script or .exe
 if os.getcwd()[-10:]=="ADB-script":
@@ -107,7 +121,19 @@ else:
 if not os.path.exists(logs_path): os.makedirs(logs_path)
 
 # Adding device name for log files
-file_path = logs_path+device_name()
+device_name = device_name()
+
+detect_device()
+print(device_name)
+
+print("Available options:\n")
+print("[1] build.prop: ro.product vars")
+print("[2] main + radio logs [buffer] (with NFC API check)")
+print("[3] main logs [live]")
+print("")
+nb = str(input('Choose option: '))
+print("")
+
 
 if nb=="1":
 	proc = subprocess.Popen(["adb", "shell", "cat" ,"/system/build.prop"], stdout=subprocess.PIPE)
@@ -118,12 +144,12 @@ if nb=="1":
 			print(line)
 			
 elif nb=="2":
-	proc = subprocess.Popen(["adb", "logcat", "-v" ,"time", "-d"], stdout=open(file_path+"_main.txt", 'w'))
+	proc = subprocess.Popen(["adb", "logcat", "-v" ,"time", "-d"], stdout=open(logs_path+device_name+"_main.txt", 'w'))
 	(out, err) = proc.communicate()
-	out_main = open(file_path+"_main.txt", 'r')
-	proc = subprocess.Popen(["adb", "logcat", "-b", "radio", "-v" ,"time", "-d"], stdout=open(file_path+"_radio.txt", 'w'))
+	out_main = open(logs_path+device_name+"_main.txt", 'r')
+	proc = subprocess.Popen(["adb", "logcat", "-b", "radio", "-v" ,"time", "-d"], stdout=open(logs_path+device_name+"_radio.txt", 'w'))
 	(out, err) = proc.communicate()
-	out_radio = open(file_path+"_radio.txt", 'r')
+	out_radio = open(logs_path+device_name+"_radio.txt", 'r')
 	
 	found = nfc_logs(out_main) or nfc_logs(out_radio)
 	
@@ -132,8 +158,7 @@ elif nb=="2":
 	
 	email = input("Send logs by email? (y/n)")
 	if email=="y":
-		prompt_email_and_send(file_path+"_main.txt", 'main')
-		prompt_email_and_send(file_path+"_radio.txt", 'radio')
+		prompt_email_and_send([file_path+"_main.txt", file_path+"_radio.txt"], 'main + radio')
 	
 	# WINDOWS only
 	subprocess.Popen('explorer "{0}"'.format(logs_path))
