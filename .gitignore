@@ -1,6 +1,7 @@
 logs/*
 __pycache__/
 dist/*
+*.txt
 
 # Windows image file caches
 Thumbs.db

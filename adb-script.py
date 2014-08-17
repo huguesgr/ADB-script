@@ -68,7 +68,12 @@ def prompt_email_and_send(files, type):
 		server = smtplib.SMTP('smtp.gmail.com', 587)
 		server.ehlo()
 		server.starttls()
-		server.login("testunps@gmail.com", "testunps1234")
+
+		with open('credentials.txt', 'r') as f:
+			login_email = f.readline().rstrip()
+			login_password = f.readline().rstrip()
+
+		server.login(login_email, login_password)
 		print("Sending mail... This might take a while.")
 		server.sendmail('testunps@gmail.com', msg['To'], msg.as_string())
 		server.quit()
