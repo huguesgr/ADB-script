@@ -16,6 +16,12 @@ if(platform.system()=="Windows"):
 else:
 	split_string = "\r\n"
 	logs_folder_name='/logs/'
+	
+def open_explorer(path):
+	if(platform.system()=="Windows"):
+		subprocess.Popen('explorer "{0}"'.format(path))
+	else:
+		subprocess.Popen(["xdg-open",path], stdout=subprocess.PIPE)
 
 def zip_attach(files):
 	zip_name=logs_path+device_name+'.zip'
@@ -165,8 +171,7 @@ elif nb=="2":
 	if email=="y":
 		prompt_email_and_send([logs_path+device_name+"_main.txt", logs_path+device_name+"_radio.txt"], 'main + radio')
 	
-	# WINDOWS only
-	subprocess.Popen('explorer "{0}"'.format(logs_path))
+	open_explorer(logs_path)
 	
 elif nb=="3":
 	try:
@@ -179,8 +184,7 @@ elif nb=="3":
 	if email=="y":
 		prompt_email_and_send([logs_path+device_name+"_main.txt"], 'main')
 		
-	# WINDOWS only
-	subprocess.Popen('explorer "{0}"'.format(logs_path))
+	open_explorer(logs_path)
 		
 else:
 	print("Invalid choice.")
