@@ -131,10 +131,11 @@ else:
 # Creating logs folder
 if not os.path.exists(logs_path): os.makedirs(logs_path)
 
+# Detecting device
+detect_device()
+
 # Adding device name for log files
 device_name = device_name()
-
-detect_device()
 print(device_name)
 
 print("Available options:\n")
