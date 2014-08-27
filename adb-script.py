@@ -6,10 +6,6 @@ from email.mime.base import MIMEBase
 from email.mime.text import MIMEText
 from email import encoders
 
-###### CONFIGURATION ######
-# TO DO
-###########################
-
 if(platform.system()=="Windows"):
 	split_string = "\r\r\n"
 	logs_folder_name='\\logs\\'
@@ -130,6 +126,10 @@ else:
 
 # Creating logs folder
 if not os.path.exists(logs_path): os.makedirs(logs_path)
+# Creating credentials.txt
+if not os.path.isfile("credentials.txt"): 
+	print("Please create credentials file before continuing.")
+	input("Press Enter to continue.")
 
 # Detecting device
 detect_device()
