@@ -113,7 +113,7 @@ def detect_device():
 def nfc_logs(output):
 	found = False
 	for line in output:
-		if re.match("4e[ ]?46[ ]?43", line, re.IGNORECASE) or re.match("01[ ]?0c[ ]?00", line, re.IGNORECASE) or re.match("4a[ ]?53[ ]?52", line, re.IGNORECASE):
+		if re.search("4e[ ]?46[ ]?43", line, re.IGNORECASE) or re.search("01[ ]?0c[ ]?00", line, re.IGNORECASE) or re.search("4a[ ]?53[ ]?52", line, re.IGNORECASE):
 			print(line)
 			found = True
 	return found
