@@ -195,7 +195,7 @@ elif nb=="4":
 	(out, err) = proc.communicate()
 	proc = subprocess.Popen(["adb", "shell", "touch" ,"/sdcard/apks/config/qualif.cfg"], stdout=subprocess.PIPE)
 	(out, err) = proc.communicate()
-	print("File /sdcard/apks/config/qualif.cfg created.")
+	print("File /sdcard/apks/config/OU_qualif.cfg created.")
 		
 else:
 	print("Invalid choice.")
