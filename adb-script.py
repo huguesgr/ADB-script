@@ -193,7 +193,7 @@ elif nb=="4":
 	(out, err) = proc.communicate()
 	proc = subprocess.Popen(["adb", "shell", "mkdir" ,"/sdcard/apks/config"], stdout=subprocess.PIPE)
 	(out, err) = proc.communicate()
-	proc = subprocess.Popen(["adb", "shell", "touch" ,"/sdcard/apks/config/qualif.cfg"], stdout=subprocess.PIPE)
+	proc = subprocess.Popen(["adb", "shell", "touch" ,"/sdcard/apks/config/OU_qualif.cfg"], stdout=subprocess.PIPE)
 	(out, err) = proc.communicate()
 	print("File /sdcard/apks/config/OU_qualif.cfg created.")
 		
