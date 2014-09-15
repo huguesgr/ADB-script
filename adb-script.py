@@ -142,6 +142,7 @@ print("Available options:\n")
 print("[1] build.prop: ro.product vars")
 print("[2] main + radio logs [buffer] (with NFC API check)")
 print("[3] main logs [live]")
+print("[4] Orange Update config.cfg")
 print("")
 nb = str(input('Choose option: '))
 print("")
@@ -186,6 +187,15 @@ elif nb=="3":
 		prompt_email_and_send([logs_path+device_name+"_main.txt"], 'main')
 		
 	open_explorer(logs_path)
+
+elif nb=="4":
+	proc = subprocess.Popen(["adb", "shell", "mkdir" ,"/sdcard/apks/"], stdout=subprocess.PIPE)
+	(out, err) = proc.communicate()
+	proc = subprocess.Popen(["adb", "shell", "mkdir" ,"/sdcard/apks/config"], stdout=subprocess.PIPE)
+	(out, err) = proc.communicate()
+	proc = subprocess.Popen(["adb", "shell", "touch" ,"/sdcard/apks/config/qualif.cfg"], stdout=subprocess.PIPE)
+	(out, err) = proc.communicate()
+	print("File /sdcard/apks/config/qualif.cfg created.")
 		
 else:
 	print("Invalid choice.")
