@@ -51,9 +51,13 @@ def device_name():
 	return manufacturer+"_"+model+"_"+id+"_"+time.strftime("%d-%m-%Y_%H-%M-%S")
 	
 def prompt_email_and_send(files, type):
+	with open('credentials.txt', 'r') as f:
+		login_email = f.readline().rstrip()
+		login_password = f.readline().rstrip()
+
 	msg = MIMEMultipart()
 	
-	msg['From'] = "testunps@gmail.com"
+	msg['From'] = login_email
 	msg['To'] = input("Your email address?")
 	msg['Subject'] = "ADB-script Logs - "+device_name+" - "+type
 	
@@ -71,13 +75,9 @@ def prompt_email_and_send(files, type):
 		server.ehlo()
 		server.starttls()
 
-		with open('credentials.txt', 'r') as f:
-			login_email = f.readline().rstrip()
-			login_password = f.readline().rstrip()
-
 		server.login(login_email, login_password)
 		print("Sending mail... This might take a while.")
-		server.sendmail('testunps@gmail.com', msg['To'], msg.as_string())
+		server.sendmail(msg['From'], msg['To'], msg.as_string())
 		server.quit()
 		print("Successfully sent email.")
 	except SMTPException:
