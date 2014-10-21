@@ -4,11 +4,11 @@ Prerequisites:
 	python3
 	python3-dev
 
-Insert into a credentials.txt your Gmail login & password:
+Insert into a `credentials.txt` file your Gmail login & password:
 
 	login
 	password
 
-To generate .exe:
+You can generate a Windows executable file:
 
 	python setup.py py2exe
